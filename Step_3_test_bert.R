@@ -1,0 +1,11 @@
+library(reticulate)
+use_condaenv("bert_r")
+transformers <- import("transformers")
+torch <- import("torch")
+tokenizer <- transformers$BertTokenizer$from_pretrained('bert-base-uncased')
+model <- transformers$BertModel$from_pretrained('bert-base-uncased')
+inputs <- tokenizer("hello world", return_tensors = "pt")
+with(torch$no_grad(), {
+  outputs <- model(inputs$input_ids, attention_mask=inputs$attention_mask)
+})
+print(dim(outputs$pooler_output$numpy()))
